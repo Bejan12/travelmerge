@@ -1,32 +1,32 @@
 <?php
-// app/libraries/Database.php
 
 class Database
 {
-    private $dbHost = 'localhost';  // Hostnaam
-    private $dbName = 'patients';   // Naam van de database (uit je dump)
-    private $dbUser = 'root';       // Gebruikersnaam (uit je dump)
-    private $dbPass = '';           // Wachtwoord (uit je dump, leeg in dit geval)
+    private $dbHost = DB_HOST;
+    private $dbName = DB_NAME;
+    private $dbUser = DB_USER;
+    private $dbPass = DB_PASS;
 
     private $dbHandler;
     private $statement;
 
     public function __construct()
     {
-        // De connectie string voor PDO, met database naam 'patients'
-        $conn = 'mysql:host=' . $this->dbHost . ';dbname=' . $this->dbName . ';charset=utf8mb4'; 
-        $options = [
+        $conn = 'mysql:host=' . $this->dbHost . ';port=3308;dbname=' . $this->dbName;
+
+        $options = array(
+
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_EMULATE_PREPARES => false,
         ];
 
         try {
-            // Proberen verbinding te maken met de database
+
             $this->dbHandler = new PDO($conn, $this->dbUser, $this->dbPass, $options);
         } catch (PDOException $e) {
-            // Foutmelding als de verbinding niet lukt
-            die('Database Error: ' . $e->getMessage());
+            echo 'Connection failed: ' . $e->getMessage();
+
         }
     }
 
@@ -45,14 +45,37 @@ class Database
         $this->statement->bindValue($param, $value, $type);
     }
 
-    // Voert de query uit
-    public function execute()
-    {
-        return $this->statement->execute();
+public function bind($parameter, $value, $type = null)
+{
+    if (is_null($type)) {
+        switch (true) {
+            case is_int($value):
+                $type = PDO::PARAM_INT;
+                break;
+            case is_bool($value):
+                $type = PDO::PARAM_BOOL;
+                break;
+            case is_null($value):
+                $type = PDO::PARAM_NULL;
+                break;
+            default:
+                $type = PDO::PARAM_STR;
+        }
     }
+    $this->statement->bindValue($parameter, $value, $type);
+}
 
-    // Haalt alle resultaten op
-    public function resultSet()
+// Voert de query uit
+public function execute()
+{
+    return $this->statement->execute();
+}
+
+// Haalt alle resultaten op
+public function resultSet()
+{
+    // Implementatie van resultSet
+}
     {
         $this->execute();
         return $this->statement->fetchAll(PDO::FETCH_OBJ);
@@ -61,8 +84,10 @@ class Database
     // Haalt één enkel resultaat op
     public function single()
     {
-        $this->execute();
-        return $this->statement->fetch(PDO::FETCH_OBJ);
+$this->execute(); // Gebruik de execute() methode uit de zakasfeature branch
+$result = $this->statement->fetch(PDO::FETCH_OBJ); // Haal het resultaat op
+$this->statement->closeCursor(); // Sluit de cursor (goede gewoonte uit de main branch)
+return $result; // Retourneer het resultaat
     }
 
     // Haalt het laatst ingevoegde ID op
@@ -70,5 +95,11 @@ class Database
     {
         return $this->dbHandler->lastInsertId();
     }
+
+
+    public function lastInsertId()
+    {
+        return $this->dbHandler->lastInsertId();
+    }
 }
-?>
+

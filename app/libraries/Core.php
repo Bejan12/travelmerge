@@ -17,7 +17,13 @@ class Core
         require_once '../app/controllers/' . $this->currentController . '.php';
         $this->currentController = new $this->currentController();
 
+         
         if (isset($url[1]) && method_exists($this->currentController, $url[1])) {
+
+            /**
+             * Bewaar de naam van de method in $this->currentMethod
+             */
+
             $this->currentMethod = $url[1];
             unset($url[1]);
         }
