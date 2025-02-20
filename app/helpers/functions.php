@@ -13,6 +13,7 @@
 
 function logger($line, $method, $file, $error)
 {
+
     date_default_timezone_set('Europe/Amsterdam');
     $time = "Datum/tijd: " . date('d-m-Y H:i:s', time()) . "\t";
     $error = "De error is: " . $error . "\t";
@@ -26,6 +27,7 @@ function logger($line, $method, $file, $error)
     if (!file_exists($pathToLogFile)) {
         file_put_contents($pathToLogFile, "Non Functional Log\r");
     }
+
 
     file_put_contents($pathToLogFile, $content, FILE_APPEND);
 }

@@ -12,7 +12,9 @@ define('DB_PASS', '');
  */
 define('URLROOT', 'http://traveleasymerge');
 
+
 /**
  * Het pad naar de folder app
  */
 define('APPROOT', dirname(dirname(__FILE__)));
+
